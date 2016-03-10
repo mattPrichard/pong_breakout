@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pong Template</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <canvas id="sCanvas" width="500" height="500" style="border: solid;"></canvas>
+    <script type="text/javascript">
+        "use strict";
+        //******************
+        // Variables
+        //******************
+        var c = document.getElementById("sCanvas");
+        var ctx = sCanvas.getContext("2d");
+        var cHeight = sCanvas.height;
+        var cWidth = sCanvas.width;
+        var pic = new Image();
+        pic.src = ('dog_small.jpg');
+      
+        
+        //******************
+        //Objects
+        //******************
+        //
+         //create paddle object
+            class Paddle{
+                constructor(x,y){
+                    this.colour = 'red';
+                    this.xPos = x;
+                    this.yPos = y;
+                    this.width = 15;
+                    this.height = 80;
+                    this.speed = 10;
+                }
+
+                drawMe(){
+                ctx.beginPath();
+                ctx.rect(this.xPos, this.yPos, this.width, this.height, this.colour);
+                ctx.fillStyle = this.colour;
+                ctx.fill();
+                }
+            }  // end paddle object
+
+        //create the sphere object
+        class Sphere {
+            constructor() {
+                    //add properties to object
+                    this.radius = (10);
+                    this.colour = "blue";
+                    this.xPos = Math.random() * cWidth;
+                    this.yPos = Math.random() * cHeight;
+                    this.speedY = 8 * Math.random();
+                    this.speedX = 8 * Math.random();
+                }
+               
+            drawMe() {
+                //method to draw itself
+                // ctx.beginPath();
+                // ctx.arc(this.xPos, this.yPos, this.radius, 0, Math.PI * 2, true);
+                // ctx.fillStyle = this.colour;
+                // ctx.fill();
+                 ctx.drawImage(pic, this.xPos, this.yPos);
+            }
+            //method to move itself
+            moveMe(){
+                this.yPos += this.speedY;
+                this.xPos += this.speedX;
+
+                //checking to bounce off the walls
+
+                if (this.yPos >cHeight-this.radius){
+            this.speedY = - this.speedY;
+            }
+                else if(this.yPos<0+this.radius){
+            this.speedY= -this.speedY;
+                }
+
+                if (this.xPos >cWidth-this.radius){
+            this.speedX = - this.speedX;
+            }
+                else if(this.xPos<0+this.radius){
+            this.speedX= -this.speedX;
+                }
+                }
+            }
+
+            //********************
+            // create game objects
+            // *******************
+            var ball = new Sphere();
+            var player1 = new Paddle(5, 150);
+            var player2 = new Paddle(480, 150);
+
+            //*********************
+            // Deal with key presses
+            // **********************
+            // 
+          
+            var keysDown = []; //empty array to store which keys are being held down
+
+
+        window.addEventListener("keydown", function (event) {
+           keysDown[event.keyCode] = true; //store the code (number)for the key being pressed
+           console.log(keysDown);           //in the array at that index number - set it to true 
+             });                                 
+
+        window.addEventListener("keyup", function (event) {
+         delete keysDown[event.keyCode]; //clear the array
+          console.log(keysDown); 
+        });
+
+        //  function checkKeys() {
+
+        //     if (keysDown[90])  player1.yPos -= player1.speed; //z
+        //     if (keysDown[88])  player1.yPos += player1.speed;//x 
+        //     if (keysDown[188]) player2.yPos -= player2.speed; //,
+        //     if (keysDown[190]) player2.yPos += player2.speed; //.
+   
+        // }
+
+        function render() {
+            requestAnimationFrame(render);//recall render() using requestAnimationFrame API 
+            ctx.clearRect(0, 0, cWidth, cHeight); //clear canvas
+        
+            ball.drawMe();//call ball object drawMe method
+            ball.moveMe();//call ball object moveMe method
+            player1.drawMe();
+            player2.drawMe();
+          //  checkKeys();  // call the checkKeys function
+        }
+    
+        render(); //set the animation and drawing on canvas going
+    </script>
+</body>
+
+</html>
+
+
+<!-- 
+ function checkKeys() {
+
+            if (keysDown[90]) {
+                if(player1.yPos > 0){
+                    player1.yPos -= player1.speed; //z
+                }
+            }
+             
+            if (keysDown[88]) {
+                if(player1.yPos < (cHeight-player1.height) ){
+                    player1.yPos += player1.speed; //x
+                 }
+            }
+
+              if (keysDown[190]) {
+                if(player2.yPos > 0){
+                    player2.yPos -= player2.speed; //,
+                }
+            }
+             
+            if (keysDown[188]) {
+                if(player2.yPos < (cHeight-player2.height) ){
+                    player2.yPos += player2.speed;//.
+                 }
+            }
+   
+        } -->

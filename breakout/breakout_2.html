@@ -1,0 +1,241 @@
+ 
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Breakout 2</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<p>Z and X to move Paddle, Space to launch ball</p>
+    <canvas id="sCanvas" width="400" height="600" style="border: solid;"></canvas>
+    <script type="text/javascript">
+        "use strict";
+        //******************
+        // Variables
+        //******************
+        var c = document.getElementById("sCanvas");
+        var ctx = sCanvas.getContext("2d");
+        var cHeight = sCanvas.height;
+        var cWidth = sCanvas.width;
+       // var img = new Image();
+       // img.src= 'court.jpg'; 
+       // var beep = new Audio('beep.wav');
+        var changedirection = false; //
+      //  var score1 = 0;  // for score board
+      //  var score2 = 0;  // for score board
+        var wall = [];  //array to hold bricks
+        var x =10, y =17;
+       
+        
+              
+        //******************
+        //Objects
+        //******************
+        //
+        //create block
+        class Block{
+                constructor(x,y){
+                    this.colour = 'green';
+                    this.xPos = x;
+                    this.yPos = y;
+                    this.width = 90;
+                    this.height = 15;
+                   
+                }
+                  drawMe(){
+                ctx.beginPath();
+                ctx.rect(this.xPos, this.yPos, this.width, this.height);
+                ctx.fillStyle = this.colour;
+                ctx.fill();
+                }
+            
+            }
+        //
+         //create paddle object
+            class Paddle{
+                constructor(x,y){
+                    this.colour = 'red';
+                    this.xPos = x;
+                    this.yPos = y;
+                    this.width = 90;
+                    this.height = 15;
+                    this.speed = 10;
+                }
+
+                drawMe(){
+                ctx.beginPath();
+                ctx.rect(this.xPos, this.yPos, this.width, this.height);
+                ctx.fillStyle = this.colour;
+                ctx.fill();
+                }
+            }  // end paddle object
+
+        //create the sphere object
+        class Sphere {
+            constructor(aRadius) {
+                    this.radius = (aRadius);
+                    this.colour = "blue";
+                    this.xPos = 200; //start ball in centre of court
+                    this.yPos = 500;
+                    this.speedY = 0;// ball stationary at start
+                    this.speedX = 0;
+                }
+               
+            drawMe() {
+                //method to draw itself
+                ctx.beginPath();
+                ctx.arc(this.xPos, this.yPos, this.radius, 0, Math.PI * 2, true);
+                ctx.fillStyle = this.colour;
+                ctx.fill();
+              
+            }
+            //method to move itself
+            moveMe(){
+                this.yPos += this.speedY;
+                this.xPos += this.speedX;
+
+                    //bounce off the right wall
+                if (this.xPos >cWidth-this.radius){
+                    this.speedX = - this.speedX;
+                }          
+                    //bounce off the left wall
+                else if(this.xPos<0+this.radius){
+                    this.speedX= -this.speedX;
+                }
+                    //bounce off top
+                else if (this.yPos <0+this.radius){
+                    this.speedY= -this.speedY;
+                }
+           
+          
+            //stop ball if hit bottom
+            if (this.yPos >cHeight){
+                this.speedX =0;
+                this.speedY =0;
+                this.yPos = cHeight;
+                   // score2++;
+                    }
+                 //bounce off paddle
+               else if(this.yPos >(player1.yPos) && (this.xPos > player1.xPos && this.xPos< (player1.xPos+player1.width) ) ){
+            this.speedY= -this.speedY;
+          //  beep.play();
+                }
+
+                }//end moveMe function
+            }// end Sphere object
+
+        //******************
+        // create game objects
+        //******************
+
+            var ball = new Sphere(10);
+            var player1 = new Paddle(180, 560);
+         
+            //*********************
+            // Deal with key presses
+            // **********************
+
+            var keysDown = {}; //empty object  to store which keys are being held down
+
+
+        window.addEventListener("keydown", function (event) {
+           keysDown[event.keyCode] = true; //store the code for the key being pressed
+        });
+
+        window.addEventListener("keyup", function (event) {
+         delete keysDown[event.keyCode] ;
+        });
+
+        function checkKeys() {
+
+            if (keysDown[90]) {
+                if(player1.xPos > 0){
+                    player1.xPos -= player1.speed; //z
+                }
+            }
+             
+            if (keysDown[88]) {
+                if(player1.xPos < (cWidth-player1.width) ){
+                    player1.xPos += player1.speed; //x
+                 }
+            } 
+        }
+
+            //*********************
+            // Make the score board
+            // **********************
+        
+  //       function scoreBoard(){
+  //           ctx.font = "60px Arial";
+  //           ctx.fillStyle = "white";
+  //           ctx.fillText(score1,225,170);
+  //           ctx.fillText(score2,350,170);
+  // }
+
+            //*********************
+            // launch the ball from the centre, left and right, on space bar
+            // **********************
+        
+   window.addEventListener("keydown", function(event){
+            if(event.keyCode == 32)  {
+                    ball.xPos = player1.xPos+(player1.width/2);
+                    ball.yPos = player1.yPos;
+                    ball.speedY = -2 -  6 * Math.random();
+                    ball.speedX = -2 -  6 * Math.random();
+                            if(changedirection) ball.speedX = - ball.speedX;
+                        }     
+                        changedirection  = !changedirection;     
+    });
+
+   function removeBricks(){
+        for(var i=0; i <wall.length;i++){
+            if (
+                ball.xPos <= (wall[i].xPos + 90)
+                && wall[i].xPos <= (ball.xPos + 15)
+                && ball.yPos <= (wall[i].yPos + 15)
+                && wall[i].yPos <= (ball.yPos + 15)
+                ) 
+            {
+        wall.splice(i, 1);
+        ball.speedY= -ball.speedY;    
+   }     
+}
+   }
+function makeWall(){
+    for (var i = 0; i<6; i++){
+        for(var j =0; j<4; j++){
+                    x = x+5;
+                    wall.push(new Block(x,y));
+                     x = x + 90;
+                     
+                }
+                x =10;
+                y += 23;
+            }
+}
+
+        function render() {
+            requestAnimationFrame(render);
+            ctx.clearRect(0, 0, cWidth, cHeight); 
+            ball.drawMe();
+            ball.moveMe();
+            player1.drawMe();
+            for(var i=0; i<wall.length;i++)//draw wall
+                {
+                    wall[i].drawMe();
+                }
+            console.log(wall);
+            checkKeys();
+            removeBricks();
+           // scoreBoard();
+        }
+ 
+        makeWall();
+        render(); //set the animation and drawing on canvas going
+    
+    </script>
+</body>
+
+</html>

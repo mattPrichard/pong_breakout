@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Untitled Document</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+</head>
+<body>
+	<h1>to do's</h1>
+	
+	<input type="text" placeholder="enter new todo"  onchange="addToList()" id="inputTodo"><br><br>
+
+	<ul id="todolist"></ul>
+	<script>
+	
+	function addToList(){
+		todolist.innerHTML += "<li>" + inputTodo.value + "</li>";
+		inputTodo.value = "";
+	}
+	
+	
+	</script>
+
+</body>
+</html>

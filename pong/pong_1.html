@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pong Template</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <canvas id="sCanvas" width="500" height="500" style="border: solid;"></canvas>
+    <script type="text/javascript">
+        "use strict";
+        //******************
+        // Variables
+        //******************
+        var c = document.getElementById("sCanvas");
+        var ctx = sCanvas.getContext("2d");
+        var cHeight = sCanvas.height;
+        var cWidth = sCanvas.width;
+      
+        
+        //******************
+        //Objects
+        //******************
+        //
+         //create paddle object
+            class Paddle{
+                constructor(x,y){
+                    this.colour = 'red';
+                    this.xPos = x;
+                    this.yPos = y;
+                    this.width = 15;
+                    this.height = 80;
+                    this.speed = 10;
+                }
+
+                drawMe(){
+                ctx.beginPath();
+                ctx.rect(this.xPos, this.yPos, this.width, this.height, this.colour);
+                ctx.fillStyle = this.colour;
+                ctx.fill();
+                }
+            }  // end paddle object
+
+        //create the sphere object
+        class Sphere {
+            constructor() {
+                    //add properties to object
+                    this.radius = (10);
+                    this.colour = "blue";
+                    this.xPos = Math.random() * cWidth;
+                    this.yPos = Math.random() * cHeight;
+                    this.speedY = 8 * Math.random();
+                    this.speedX = 8 * Math.random();
+                }
+               
+            drawMe() {
+                //method to draw itself
+                ctx.beginPath();
+                ctx.arc(this.xPos, this.yPos, this.radius, 0, Math.PI * 2, true);
+                ctx.fillStyle = this.colour;
+                ctx.fill();
+            }
+            //method to move itself
+            moveMe(){
+                this.yPos += this.speedY;
+                this.xPos += this.speedX;
+
+                //checking to bounce off the walls
+
+                if (this.yPos >cHeight-this.radius){
+            this.speedY = - this.speedY;
+            }
+                else if(this.yPos<0+this.radius){
+            this.speedY= -this.speedY;
+                }
+
+                if (this.xPos >cWidth-this.radius){
+            this.speedX = - this.speedX;
+            }
+                else if(this.xPos<0+this.radius){
+            this.speedX= -this.speedX;
+                }
+                }
+            }
+
+            //********************
+            // create game objects
+            // *******************
+            var ball = new Sphere();
+            var player1 = new Paddle(5, 150);
+            var player2 = new Paddle(480, 150);
+
+
+       
+        function render() {
+            requestAnimationFrame(render);//recall render() using requestAnimationFrame API 
+            ctx.clearRect(0, 0, cWidth, cHeight); //clear canvas
+            ball.drawMe();//call ball object drawMe method
+            ball.moveMe();//call ball object moveMe method
+             player1.drawMe();
+            player2.drawMe();
+           
+        }
+    
+        render(); //set the animation and drawing on canvas going
+    </script>
+</body>
+
+</html>

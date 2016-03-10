@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>cat and dog</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <canvas id="sCanvas" width="500" height="500" style="border: solid;"></canvas>
+    <script type="text/javascript">
+        "use strict";
+        //******************
+        // Variables
+        //******************
+        var c = document.getElementById("sCanvas");
+        var ctx = sCanvas.getContext("2d");
+        var cHeight = sCanvas.height;
+        var cWidth = sCanvas.width;
+        var dog = new Image();
+        dog.src = ('dog_small.jpg');
+        var cat = new Image();
+        cat.src = ('cat.jpg');
+        var score1 = 0; 
+
+        document.getElementById("sCanvas").style.background = 'green';  
+        //******************
+        //Objects
+        //******************
+        //
+         //create cat object
+            class Cat{
+                constructor(){
+                    this.xPos = 50 + (Math.random() * (cWidth - 100));
+                    this.yPos = 50 + (Math.random() * (cHeight - 100));
+                }
+
+                drawMe(){
+                ctx.drawImage(cat, this.xPos, this.yPos);
+                }
+            } 
+
+        //create the dog object
+        class Dog{
+            constructor() {
+                    this.xPos = (cWidth / 2)-25;
+                    this.yPos = (cHeight / 2)-25;
+                    this.speed = 10;
+                }
+               
+            drawMe() {
+                 ctx.drawImage(dog, this.xPos, this.yPos);
+            }
+            //method to move itself
+            moveMe(){
+            // 
+             if (
+        this.xPos <= (catPlay.xPos + 50)
+        && catPlay.xPos <= (this.xPos + 50)
+        && this.yPos <= (catPlay.yPos + 50)
+        && catPlay.yPos <= (this.yPos + 50)
+    ) {
+        score1++;
+        reset();
+    }
+         
+                 }
+            }
+            //********************
+            // create game objects
+            // *******************
+            var dogPlay = new Dog();
+            var catPlay = new Cat();
+
+                function reset() {
+    dogPlay.xPos = (cWidth / 2)-25;
+    dogPlay.yPos = (cHeight / 2)-25;
+
+    // Throw the cat somewhere on the screen randomly
+    catPlay.xPos = 50 + (Math.random() * (cWidth - 100));
+    catPlay.yPos = 50 + (Math.random() * (cHeight - 100));
+}
+            
+            //*********************
+            // Deal with key presses
+            // **********************
+            // 
+          
+            var keysDown = []; //empty array to store which keys are being held down
+
+
+        window.addEventListener("keydown", function (event) {
+           keysDown[event.keyCode] = true; //store the code (number)for the key being pressed
+             });                                 
+
+        window.addEventListener("keyup", function (event) {
+         delete keysDown[event.keyCode]; 
+        });
+
+      
+        function checkKeys() {
+
+            if (keysDown[87]) {
+                if(dogPlay.yPos > 0){
+                    dogPlay.yPos -= dogPlay.speed; //z
+                }
+            }
+             
+            if (keysDown[83]) {
+                if(dogPlay.yPos < (cHeight-50) ){
+                    dogPlay.yPos += dogPlay.speed; //x
+                 }
+            }
+
+              if (keysDown[65]) {
+                if(dogPlay.xPos > 0){
+                    dogPlay.xPos -= dogPlay.speed; //,
+                }
+            }
+             
+            if (keysDown[68]) {
+                if(dogPlay.xPos < (cHeight-50) ){
+                    dogPlay.xPos += dogPlay.speed;//.
+                 }
+            }
+   
+        }
+                //*********************
+            // Make the score board
+            // **********************
+        
+        function scoreBoard(){
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "black";
+            ctx.fillText('cats chased:',10,20);
+            ctx.fillText(score1,130,20);
+  }
+        function render() {
+            requestAnimationFrame(render);//recall render() using requestAnimationFrame API 
+            ctx.clearRect(0, 0, cWidth, cHeight); //clear canvas
+            dogPlay.drawMe();//call dog object drawMe method
+            dogPlay.moveMe();
+            catPlay.drawMe();
+            checkKeys();
+            scoreBoard();  // call the checkKeys function
+        }
+
+        
+    
+        render(); //set the animation and drawing on canvas going
+    </script>
+</body>
+
+</html>
